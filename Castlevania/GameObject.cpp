@@ -2,54 +2,38 @@
 
 #include "GameObject.h"
 #include "Game.h"
+#include "Sprite.h"
 
 
-GameObject::GameObject(LPCWSTR texturePath)
+
+GameObject::GameObject()
 {
 	x = y = 0;
+	vx = 0.07f;
+}
 
-	D3DXIMAGE_INFO info;
-	HRESULT result = D3DXGetImageInfoFromFile(texturePath, &info);
-	if (result != D3D_OK)
-	{
-		return;
-	}
-
-	LPDIRECT3DDEVICE9 d3ddv = Game::GetInstance()->GetDirect3DDevice();
-
-	result = D3DXCreateTextureFromFileEx(
-		d3ddv,								
-		texturePath,						
-		info.Width,							
-		info.Height,						
-		1,
-		D3DUSAGE_DYNAMIC,
-		D3DFMT_UNKNOWN,
-		D3DPOOL_DEFAULT,
-		D3DX_DEFAULT,
-		D3DX_DEFAULT,
-		D3DCOLOR_XRGB(255, 255, 255),			
-		&info,
-		NULL,
-		&texture);								
-
-	if (result != D3D_OK)
-	{
-		return;
-	}
+void GameObject::AddAnimation(int aniId)
+{
+	LPANIMATION ani = Animations::GetInstance()->Get(aniId);
+	animations.push_back(ani);
 }
 
 void GameObject::Update(DWORD dt)
 {
+	x += vx * dt;
+	if ((vx > 0 && x > 290) || (x < 0 && vx < 0)) vx = -vx;
 
 }
 
 void GameObject::Render()
 {
-	Game::GetInstance()->Draw(x, y, texture);
+	LPANIMATION ani;
+	if (vx > 0) ani = animations[0]; else ani = animations[1];
+	//ani = animations[0];
+	ani->Render(x, y);
 }
 
 GameObject::~GameObject()
 {
-	if (texture != NULL) texture->Release();
+
 }

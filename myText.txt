@@ -2,4 +2,5 @@ M?t s? card màn hình NVIDIA b? l?i thì Disable di r?i m?i ch?y Game không thì s?
 không t?o du?c Device
 
 1.Skeleton - Xong
-2.Sprite vs Animation -
+2.Sprite vs Animation - Xong
+3.Keyboard 

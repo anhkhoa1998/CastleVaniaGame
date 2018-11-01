@@ -4,19 +4,26 @@
 
 #include "Game.h"
 #include "simon.h"
+#include "GameObject.h"
+#include "Textures.h"
+#include "Animations.h"
+#include "Sprite.h"
 
-#define WINDOW_NAME L"Skeleton"
+#define WINDOW_NAME L"Animation"
 #define GAME_NAME L"CastleVania"
 
-#define SIMON_PATH L"simon.png"
+//#define SIMON_PATH L"simon.png"
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(0,255,0)
 
-#define MAX_FRAME_RATE 10
+#define MAX_FRAME_RATE 60
+
+#define ID_TEX_SIMON_LEFT 0
+#define ID_TEX_SIMON_RIGHT 100
 
 Game *game;
-simon *Simon;
+GameObject *Simon;
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -33,8 +40,50 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void LoadResources()
 {
-	Simon = new simon(SIMON_PATH);
+	Textures * textures = Textures::GetInstance();
+	textures->Add(ID_TEX_SIMON_LEFT, L"textures\\simonLEFT.png", D3DCOLOR_XRGB(176, 224, 248));
+	textures->Add(ID_TEX_SIMON_RIGHT, L"textures\\simonRIGHT.png", D3DCOLOR_XRGB(176, 224, 248));
+
+	Sprites * sprites = Sprites::GetInstance();
+	Animations * animations = Animations::GetInstance();
+
+	LPDIRECT3DTEXTURE9 texSimonRight = textures->Get(ID_TEX_SIMON_RIGHT);
+
+	sprites->Add(10001, 240, 0, 300, 66, texSimonRight);
+	sprites->Add(10002, 300, 0, 360, 66, texSimonRight);
+	sprites->Add(10003, 360, 0, 420, 66, texSimonRight);
+	sprites->Add(10004, 420, 0, 480, 66, texSimonRight);
+
+	LPDIRECT3DTEXTURE9 texSimonLeft = textures->Get(ID_TEX_SIMON_LEFT);
+
+	sprites->Add(10011, 0, 0, 60, 66, texSimonLeft);
+	sprites->Add(10012, 60, 0, 120, 66, texSimonLeft);
+	sprites->Add(10013, 120, 0, 180, 66, texSimonLeft);
+	sprites->Add(10014, 180, 0, 240, 66, texSimonLeft);
+
+	LPANIMATION ani;
+
+	ani = new Animation(100);
+	ani->Add(10001);
+	ani->Add(10002);
+	ani->Add(10003);
+	ani->Add(10004);
+	animations->Add(500, ani);
+
+	ani = new Animation(101);
+	ani->Add(10011);
+	ani->Add(10012);
+	ani->Add(10013);
+	ani->Add(10014);
+	animations->Add(501, ani);
+
+	Simon = new GameObject();
+	Simon->AddAnimation(500);
+	Simon->AddAnimation(501);
+
+
 	Simon->SetPosition(10.0f, 100.0f);
+
 }
 
 void Update(DWORD dt)
