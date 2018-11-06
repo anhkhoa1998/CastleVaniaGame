@@ -1,2 +1,14 @@
-﻿  main.cpp
+﻿  Animations.cpp
+  Game.cpp
+  GameObject.cpp
+  main.cpp
+c:\users\admin\desktop\game\castlevania\castlevania\simon.h(31): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  Rod.cpp
+c:\users\admin\desktop\game\castlevania\castlevania\simon.h(31): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  simon.cpp
+c:\users\admin\desktop\game\castlevania\castlevania\simon.h(31): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  Sprite.cpp
+  Textures.cpp
+  Weapon.cpp
+  Generating Code...
   Castlevania.vcxproj -> C:\Users\Admin\Desktop\game\Castlevania\Debug\Castlevania.exe

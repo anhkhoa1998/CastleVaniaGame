@@ -4,12 +4,13 @@
 #include "Game.h"
 #include "Sprite.h"
 
-
+vector<LPANIMATION> GameObject::animations;
 
 GameObject::GameObject()
 {
 	x = y = 0;
-	vx = 0.07f;
+	vx = vy = 0;
+	nx = 1;
 }
 
 void GameObject::AddAnimation(int aniId)
@@ -21,16 +22,13 @@ void GameObject::AddAnimation(int aniId)
 void GameObject::Update(DWORD dt)
 {
 	x += vx * dt;
-	if ((vx > 0 && x > 290) || (x < 0 && vx < 0)) vx = -vx;
+	y += vy * dt;
 
 }
 
 void GameObject::Render()
 {
-	LPANIMATION ani;
-	if (vx > 0) ani = animations[0]; else ani = animations[1];
-	//ani = animations[0];
-	ani->Render(x, y);
+	
 }
 
 GameObject::~GameObject()

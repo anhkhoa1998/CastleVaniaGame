@@ -2,6 +2,7 @@
 #include<d3d9.h>
 #include<d3dx9.h>
 
+
 #include "Game.h"
 #include "simon.h"
 #include "GameObject.h"
@@ -9,7 +10,7 @@
 #include "Animations.h"
 #include "Sprite.h"
 
-#define WINDOW_NAME L"Animation"
+#define WINDOW_NAME L"KeyBoard"
 #define GAME_NAME L"CastleVania"
 
 //#define SIMON_PATH L"simon.png"
@@ -23,7 +24,44 @@
 #define ID_TEX_SIMON_RIGHT 100
 
 Game *game;
-GameObject *Simon;
+simon *Simon;
+
+class CSampleKeyHander : public KeyEventHandler
+{
+	virtual void KeyState(BYTE *states);
+	virtual void OnKeyDown(int KeyCode);
+	virtual void OnKeyUp(int KeyCode);
+};
+
+CSampleKeyHander * keyHandler;
+
+void CSampleKeyHander::OnKeyDown(int KeyCode)
+{
+	switch (KeyCode)
+	{
+	case DIK_SPACE:
+		Simon->SetState(SIMON_STATE_JUMP);
+		break;
+	}
+}
+
+void CSampleKeyHander::OnKeyUp(int KeyCode)
+{
+}
+
+void CSampleKeyHander::KeyState(BYTE *states)
+{
+	if (game->IsKeyDown(DIK_RIGHT))
+		Simon->SetState(SIMON_STATE_WALKING_RIGHT);
+	else if (game->IsKeyDown(DIK_LEFT))
+		Simon->SetState(SIMON_STATE_WALKING_LEFT);
+	else if (game->IsKeyDown(DIK_F) && Simon->GetDir() == 1)
+		Simon->SetState(SIMON_STATE_ATTACK_RIGHT);
+	else if (game->IsKeyDown(DIK_F) && Simon->GetDir() == -1)
+		Simon->SetState(SIMON_STATE_ATTACK_LEFT);
+	else if (Simon->GetDir() == 1) Simon->SetState(SIMON_STATE_IDLE_RIGHT);
+	else Simon->SetState(SIMON_STATE_IDLE_LEFT);
+}
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -54,6 +92,13 @@ void LoadResources()
 	sprites->Add(10003, 360, 0, 420, 66, texSimonRight);
 	sprites->Add(10004, 420, 0, 480, 66, texSimonRight);
 
+	//attack right
+	sprites->Add(10020, 0, 0, 60, 66, texSimonRight);
+	sprites->Add(10021, 60, 0, 120, 66, texSimonRight);
+	sprites->Add(10022, 120, 0, 180, 66, texSimonRight);
+
+
+
 	LPDIRECT3DTEXTURE9 texSimonLeft = textures->Get(ID_TEX_SIMON_LEFT);
 
 	sprites->Add(10011, 0, 0, 60, 66, texSimonLeft);
@@ -61,7 +106,21 @@ void LoadResources()
 	sprites->Add(10013, 120, 0, 180, 66, texSimonLeft);
 	sprites->Add(10014, 180, 0, 240, 66, texSimonLeft);
 
+	//attack left
+	sprites->Add(10024, 300, 0, 360, 66, texSimonLeft);
+	sprites->Add(10025, 360, 0, 420, 66, texSimonLeft);
+	sprites->Add(10026, 420, 0, 480, 66, texSimonLeft);
+
+
+
 	LPANIMATION ani;
+	ani = new Animation(100);
+	ani->Add(10004);
+	animations->Add(400, ani);
+
+	ani = new Animation(100);
+	ani->Add(10011);
+	animations->Add(401, ani);
 
 	ani = new Animation(100);
 	ani->Add(10001);
@@ -77,9 +136,31 @@ void LoadResources()
 	ani->Add(10014);
 	animations->Add(501, ani);
 
-	Simon = new GameObject();
-	Simon->AddAnimation(500);
-	Simon->AddAnimation(501);
+	ani = new Animation(100);
+	ani->Add(10020);
+	ani->Add(10021);
+	ani->Add(10022);
+	animations->Add(502, ani);
+
+	ani = new Animation(100);
+	ani->Add(10020);
+	ani->Add(10021);
+	ani->Add(10022);
+	animations->Add(503, ani);
+
+	ani = new Animation(100);
+	ani->Add(10024);
+	ani->Add(10025);
+	ani->Add(10026);
+	animations->Add(504, ani);
+
+	Simon = new simon();
+	simon::AddAnimation(400);		// idle right
+	simon::AddAnimation(401);		// idle left
+	simon::AddAnimation(500);		// walk right
+	simon::AddAnimation(501);		// walk left
+	simon::AddAnimation(503);		// attack right
+	simon::AddAnimation(504);		// attack left
 
 
 	Simon->SetPosition(10.0f, 100.0f);
@@ -188,6 +269,7 @@ int Run()
 		if (dt >= tickPerFrame)
 		{
 			frameStart = now;
+			game->ProcessKeyboard();
 			Update(dt);
 			Render();
 		}
@@ -204,6 +286,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	game = Game::GetInstance();
 	game->Init(hWnd);
+
+	keyHandler = new CSampleKeyHander();
+	game->InitKeyboard(keyHandler);
 
 	LoadResources();
 	Run();
