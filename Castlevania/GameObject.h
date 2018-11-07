@@ -25,7 +25,7 @@ public:
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void SetState(int state) { this->state = state; }
 	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = y; }
-
+	int GetNx() { return nx; }
 	void GetState() { this->state; }
 	float GetX() { return this->x; }
 	float GetY() { return this->y; }

@@ -9,6 +9,7 @@
 #include "Textures.h"
 #include "Animations.h"
 #include "Sprite.h"
+#include "Weapon.h"
 
 #define WINDOW_NAME L"KeyBoard"
 #define GAME_NAME L"CastleVania"
@@ -22,9 +23,11 @@
 
 #define ID_TEX_SIMON_LEFT 0
 #define ID_TEX_SIMON_RIGHT 100
+#define ID_TEX_ROI 300
 
 Game *game;
 simon *Simon;
+Weapon * weap;
 
 class CSampleKeyHander : public KeyEventHandler
 {
@@ -55,10 +58,11 @@ void CSampleKeyHander::KeyState(BYTE *states)
 		Simon->SetState(SIMON_STATE_WALKING_RIGHT);
 	else if (game->IsKeyDown(DIK_LEFT))
 		Simon->SetState(SIMON_STATE_WALKING_LEFT);
-	else if (game->IsKeyDown(DIK_F) && Simon->GetDir() == 1)
+	else if (game->IsKeyDown(DIK_F))
+	{
 		Simon->SetState(SIMON_STATE_ATTACK_RIGHT);
-	else if (game->IsKeyDown(DIK_F) && Simon->GetDir() == -1)
-		Simon->SetState(SIMON_STATE_ATTACK_LEFT);
+		weap->SetState(WEAPON_STATE_FIGHT,Simon);
+	}
 	else if (Simon->GetDir() == 1) Simon->SetState(SIMON_STATE_IDLE_RIGHT);
 	else Simon->SetState(SIMON_STATE_IDLE_LEFT);
 }
@@ -81,35 +85,41 @@ void LoadResources()
 	Textures * textures = Textures::GetInstance();
 	textures->Add(ID_TEX_SIMON_LEFT, L"textures\\simonLEFT.png", D3DCOLOR_XRGB(176, 224, 248));
 	textures->Add(ID_TEX_SIMON_RIGHT, L"textures\\simonRIGHT.png", D3DCOLOR_XRGB(176, 224, 248));
+	textures->Add(ID_TEX_ROI, L"textures\\roi.png", D3DCOLOR_XRGB(176, 224, 248));
 
 	Sprites * sprites = Sprites::GetInstance();
 	Animations * animations = Animations::GetInstance();
 
 	LPDIRECT3DTEXTURE9 texSimonRight = textures->Get(ID_TEX_SIMON_RIGHT);
 
-	sprites->Add(10001, 240, 0, 300, 66, texSimonRight);
-	sprites->Add(10002, 300, 0, 360, 66, texSimonRight);
-	sprites->Add(10003, 360, 0, 420, 66, texSimonRight);
-	sprites->Add(10004, 420, 0, 480, 66, texSimonRight);
+	sprites->Add(10001, 240, 0, 300, 66, texSimonRight,0,0);
+	sprites->Add(10002, 300, 0, 360, 66, texSimonRight,0,0);
+	sprites->Add(10003, 360, 0, 420, 66, texSimonRight,0,0);
+	sprites->Add(10004, 420, 0, 480, 66, texSimonRight,0,0);
 
 	//attack right
-	sprites->Add(10020, 0, 0, 60, 66, texSimonRight);
-	sprites->Add(10021, 60, 0, 120, 66, texSimonRight);
-	sprites->Add(10022, 120, 0, 180, 66, texSimonRight);
+	sprites->Add(10020, 0, 0, 60, 66, texSimonRight,0,0);
+	sprites->Add(10021, 60, 0, 120, 66, texSimonRight,0,0);
+	sprites->Add(10022, 120, 0, 180, 66, texSimonRight,0,0);
 
 
 
 	LPDIRECT3DTEXTURE9 texSimonLeft = textures->Get(ID_TEX_SIMON_LEFT);
 
-	sprites->Add(10011, 0, 0, 60, 66, texSimonLeft);
-	sprites->Add(10012, 60, 0, 120, 66, texSimonLeft);
-	sprites->Add(10013, 120, 0, 180, 66, texSimonLeft);
-	sprites->Add(10014, 180, 0, 240, 66, texSimonLeft);
+	sprites->Add(10011, 0, 0, 60, 66, texSimonLeft,0,0);
+	sprites->Add(10012, 60, 0, 120, 66, texSimonLeft,0,0);
+	sprites->Add(10013, 120, 0, 180, 66, texSimonLeft,0,0);
+	sprites->Add(10014, 180, 0, 240, 66, texSimonLeft,0,0);
 
 	//attack left
-	sprites->Add(10024, 300, 0, 360, 66, texSimonLeft);
-	sprites->Add(10025, 360, 0, 420, 66, texSimonLeft);
-	sprites->Add(10026, 420, 0, 480, 66, texSimonLeft);
+	sprites->Add(10024, 300, 0, 360, 66, texSimonLeft,0,0);
+	sprites->Add(10025, 360, 0, 420, 66, texSimonLeft,0,0);
+	sprites->Add(10026, 420, 0, 480, 66, texSimonLeft,0,0);
+
+	LPDIRECT3DTEXTURE9 texSimonROI = textures->Get(ID_TEX_ROI);
+	sprites->Add(30011, 488, 17, 504, 66, texSimonROI, -9,14 );
+	sprites->Add(30012, 328, 12, 360, 50, texSimonROI, -30,8);
+	sprites->Add(30013, 243, 16, 288, 32, texSimonROI, 35,9);
 
 
 
@@ -154,6 +164,12 @@ void LoadResources()
 	ani->Add(10026);
 	animations->Add(504, ani);
 
+	ani = new Animation(100);
+	ani->Add(30011);
+	ani->Add(30012);
+	ani->Add(30013);
+	animations->Add(600, ani);
+
 	Simon = new simon();
 	simon::AddAnimation(400);		// idle right
 	simon::AddAnimation(401);		// idle left
@@ -165,11 +181,19 @@ void LoadResources()
 
 	Simon->SetPosition(10.0f, 100.0f);
 
+	
+	weap = new Weapon();
+	Weapon::AddAnimation(600);
+
+
+
+
 }
 
 void Update(DWORD dt)
 {
 	Simon->Update(dt);
+	weap->Update(dt,Simon);
 }
 
 void Render()
@@ -187,7 +211,7 @@ void Render()
 
 
 		Simon->Render();
-
+		weap->Render(Simon);
 
 		spriteHandler->End();
 		d3ddv->EndScene();

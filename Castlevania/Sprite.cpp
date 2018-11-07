@@ -3,7 +3,7 @@
 
 
 
-Sprite::Sprite(int id,int left,int top, int right,int bottom, LPDIRECT3DTEXTURE9 tex)
+Sprite::Sprite(int id,int left,int top, int right,int bottom, LPDIRECT3DTEXTURE9 tex,int xP,int yP)
 {
 	this->id = id;
 	this->left = left;
@@ -11,6 +11,9 @@ Sprite::Sprite(int id,int left,int top, int right,int bottom, LPDIRECT3DTEXTURE9
 	this->top = top;
 	this->bottom = bottom;
 	this->texture = tex;
+	this->xP = xP;
+	this->yP = yP;
+
 }
 
 Sprite::~Sprite()
@@ -28,12 +31,12 @@ Sprites * Sprites::GetInstance()
 void Sprite::Draw(float x, float y)
 {
 	Game * game = Game::GetInstance();
-	game->Draw(x, y, texture, left, top, right, bottom);
+	game->Draw(x+xP, y+yP, texture, left, top, right, bottom);
 }
 
-void Sprites::Add(int id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 tex)
+void Sprites::Add(int id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 tex,int xP,int yP)
 {
-	LPSPRITE s = new Sprite(id, left, top, right, bottom,tex);
+	LPSPRITE s = new Sprite(id, left, top, right, bottom,tex,xP,yP);
 	sprites[id] = s;
 
 }

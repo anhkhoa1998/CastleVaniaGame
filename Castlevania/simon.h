@@ -22,6 +22,7 @@
 
 class simon :public GameObject
 {
+	
 public:
 	void Update(DWORD dt);
 	void Render();

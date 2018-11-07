@@ -32,6 +32,9 @@ void Animation::Render(float x,float y)
 			if (currentFrame == frames.size()) currentFrame = 0;
 		}
 	}
+	xP = frames[currentFrame]->GetSprite()->getXp();
+	yP = frames[currentFrame]->GetSprite()->getYp();
+
 	frames[currentFrame]->GetSprite()->Draw(x, y);
 }
 

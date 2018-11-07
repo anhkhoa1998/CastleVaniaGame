@@ -26,10 +26,14 @@ class Animation
 	int defaultTime;
 	int currentFrame;
 	vector< LPANIMATION_FRAME> frames;
+	int xP;
+	int yP;
 public:
 	Animation(int defaultTime) { this->defaultTime = defaultTime; lastFrameTime = -1; currentFrame = -1; }
 	void Add(int spriteId, DWORD time = 0);
 	void Render(float x, float y);
+	int getXp() { return xP; }
+	int getYp() { return yP; }
 	~Animation();
 };
 
