@@ -14,8 +14,8 @@ private:
 
 public:
 	Weapon();
-	virtual void Update(DWORD dt, simon *simon);
-	virtual void Render(simon *simon);
+	void Update(DWORD dt, simon *simon);
+	void Render(simon *simon);
 	void SetState(int state, simon *simon);
 	void SetLevel(int l = 1) { this->level = l; }
 	void SetPosition(simon *simon,float x,float y);

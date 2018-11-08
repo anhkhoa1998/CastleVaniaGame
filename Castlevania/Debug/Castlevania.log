@@ -1,4 +1,4 @@
-﻿  Weapon.cpp
+﻿  main.cpp
 c:\users\admin\desktop\game\castlevania\castlevania\sprite.h(26): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
 c:\users\admin\desktop\game\castlevania\castlevania\sprite.h(27): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
 c:\users\admin\desktop\game\castlevania\castlevania\gameobject.h(28): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data

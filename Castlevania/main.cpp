@@ -19,7 +19,7 @@
 #define SCREEN_HEIGHT 240
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(0,255,0)
 
-#define MAX_FRAME_RATE 60
+#define MAX_FRAME_RATE 5
 
 #define ID_TEX_SIMON_LEFT 0
 #define ID_TEX_SIMON_RIGHT 100
@@ -63,8 +63,12 @@ void CSampleKeyHander::KeyState(BYTE *states)
 		Simon->SetState(SIMON_STATE_ATTACK_RIGHT);
 		weap->SetState(WEAPON_STATE_FIGHT,Simon);
 	}
-	else if (Simon->GetDir() == 1) Simon->SetState(SIMON_STATE_IDLE_RIGHT);
-	else Simon->SetState(SIMON_STATE_IDLE_LEFT);
+	else
+	{
+		Simon->SetState(SIMON_STATE_IDLE_RIGHT);
+		weap->SetState(WEAPON_STATE_IDLE, Simon);
+	}
+	
 }
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -117,9 +121,9 @@ void LoadResources()
 	sprites->Add(10026, 420, 0, 480, 66, texSimonLeft,0,0);
 
 	LPDIRECT3DTEXTURE9 texSimonROI = textures->Get(ID_TEX_ROI);
-	sprites->Add(30011, 488, 17, 504, 66, texSimonROI, -9,14 );
-	sprites->Add(30012, 328, 12, 360, 50, texSimonROI, -30,8);
-	sprites->Add(30013, 243, 16, 288, 32, texSimonROI, 35,9);
+	sprites->Add(30011,487 , 19, 505, 66, texSimonROI, -10,18);
+	sprites->Add(30012, 328, 15, 360, 51, texSimonROI, 0,4);
+	sprites->Add(30013, 231, 19, 289, 34, texSimonROI, 56,20);
 
 
 
@@ -153,9 +157,9 @@ void LoadResources()
 	animations->Add(502, ani);
 
 	ani = new Animation(100);
-	ani->Add(10020);
-	ani->Add(10021);
 	ani->Add(10022);
+	ani->Add(10021);
+	ani->Add(10020);
 	animations->Add(503, ani);
 
 	ani = new Animation(100);

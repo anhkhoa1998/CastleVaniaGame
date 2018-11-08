@@ -54,6 +54,8 @@ void Weapon::SetState(int state,simon * Simon)
 	case WEAPON_STATE_FIGHT:
 		vx = 0;
 		break;
+	case WEAPON_STATE_IDLE:
+		break;
 	}
 
 }
