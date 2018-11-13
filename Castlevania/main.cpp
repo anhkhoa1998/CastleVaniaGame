@@ -10,24 +10,27 @@
 #include "Animations.h"
 #include "Sprite.h"
 #include "Weapon.h"
+#include "firePillar.h"
 
 #define WINDOW_NAME L"KeyBoard"
 #define GAME_NAME L"CastleVania"
 
-//#define SIMON_PATH L"simon.png"
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(0,255,0)
 
-#define MAX_FRAME_RATE 5
+#define MAX_FRAME_RATE 30
 
 #define ID_TEX_SIMON_LEFT 0
 #define ID_TEX_SIMON_RIGHT 100
-#define ID_TEX_ROI 300
+#define ID_TEX_ROI_RIGHT 300
+#define ID_TEX_ROI_LEFT 400
+#define ID_TEX_FIRE_PILLAR 500
 
 Game *game;
 simon *Simon;
 Weapon * weap;
+firePillar * frPillar;
 
 class CSampleKeyHander : public KeyEventHandler
 {
@@ -60,13 +63,13 @@ void CSampleKeyHander::KeyState(BYTE *states)
 		Simon->SetState(SIMON_STATE_WALKING_LEFT);
 	else if (game->IsKeyDown(DIK_F))
 	{
-		Simon->SetState(SIMON_STATE_ATTACK_RIGHT);
-		weap->SetState(WEAPON_STATE_FIGHT,Simon);
+		Simon->SetState(SIMON_STATE_ATTACK);
+		weap->SetState(WEAPON_STATE_FIGHT, Simon);
 	}
 	else
 	{
-		Simon->SetState(SIMON_STATE_IDLE_RIGHT);
-		weap->SetState(WEAPON_STATE_IDLE, Simon);
+		Simon->SetState(SIMON_STATE_IDLE);
+		weap->SetState(WEAPON_STATE_IDLE,Simon);
 	}
 	
 }
@@ -89,7 +92,9 @@ void LoadResources()
 	Textures * textures = Textures::GetInstance();
 	textures->Add(ID_TEX_SIMON_LEFT, L"textures\\simonLEFT.png", D3DCOLOR_XRGB(176, 224, 248));
 	textures->Add(ID_TEX_SIMON_RIGHT, L"textures\\simonRIGHT.png", D3DCOLOR_XRGB(176, 224, 248));
-	textures->Add(ID_TEX_ROI, L"textures\\roi.png", D3DCOLOR_XRGB(176, 224, 248));
+	textures->Add(ID_TEX_ROI_RIGHT, L"textures\\roiRight.png", D3DCOLOR_XRGB(176, 224, 248));
+	textures->Add(ID_TEX_FIRE_PILLAR, L"textures\\firePillar.png", D3DCOLOR_XRGB(176, 224, 248));
+	textures->Add(ID_TEX_ROI_LEFT, L"textures\\roiLeft.png", D3DCOLOR_XRGB(176, 224, 248));
 
 	Sprites * sprites = Sprites::GetInstance();
 	Animations * animations = Animations::GetInstance();
@@ -120,12 +125,19 @@ void LoadResources()
 	sprites->Add(10025, 360, 0, 420, 66, texSimonLeft,0,0);
 	sprites->Add(10026, 420, 0, 480, 66, texSimonLeft,0,0);
 
-	LPDIRECT3DTEXTURE9 texSimonROI = textures->Get(ID_TEX_ROI);
-	sprites->Add(30011,487 , 19, 505, 66, texSimonROI, -10,18);
-	sprites->Add(30012, 328, 15, 360, 51, texSimonROI, 0,4);
-	sprites->Add(30013, 231, 19, 289, 34, texSimonROI, 56,20);
+	LPDIRECT3DTEXTURE9 texSimonROIright = textures->Get(ID_TEX_ROI_RIGHT);
+	sprites->Add(30011,487 , 19, 505, 66, texSimonROIright, -10,18);
+	sprites->Add(30012, 328, 15, 360, 51, texSimonROIright, 0,4);
+	sprites->Add(30013, 231, 19, 289, 34, texSimonROIright, 56,20);
 
+	LPDIRECT3DTEXTURE9 texSimonROIleft = textures->Get(ID_TEX_ROI_LEFT);
+	sprites->Add(30021, 135, 20, 152, 67, texSimonROIleft, 52, 16);
+	sprites->Add(30022, 280, 14, 313, 51, texSimonROIleft, 28, 8);
+	sprites->Add(30023, 352, 15, 407, 32, texSimonROIleft, -50, 15);
 
+	LPDIRECT3DTEXTURE9 texFirePillar = textures->Get(ID_TEX_FIRE_PILLAR);
+	sprites->Add(40011, 0, 0, 32, 64, texFirePillar, 0, 0);
+	sprites->Add(40012, 32, 0, 64, 64, texFirePillar, 0, 0);
 
 	LPANIMATION ani;
 	ani = new Animation(100);
@@ -174,6 +186,17 @@ void LoadResources()
 	ani->Add(30013);
 	animations->Add(600, ani);
 
+	ani = new Animation(100);
+	ani->Add(40011);
+	ani->Add(40012);
+	animations->Add(800, ani);
+
+	ani = new Animation(100);
+	ani->Add(30021);
+	ani->Add(30022);
+	ani->Add(30023);
+	animations->Add(900, ani);
+
 	Simon = new simon();
 	simon::AddAnimation(400);		// idle right
 	simon::AddAnimation(401);		// idle left
@@ -188,9 +211,12 @@ void LoadResources()
 	
 	weap = new Weapon();
 	Weapon::AddAnimation(600);
+	Weapon::AddAnimation(900);
 
+	frPillar = new firePillar();
+	firePillar::AddAnimation(800);
 
-
+	frPillar->SetPosition(200.0f, 100.0f);
 
 }
 
@@ -198,6 +224,7 @@ void Update(DWORD dt)
 {
 	Simon->Update(dt);
 	weap->Update(dt,Simon);
+	frPillar->Update(dt);
 }
 
 void Render()
@@ -216,6 +243,7 @@ void Render()
 
 		Simon->Render();
 		weap->Render(Simon);
+		frPillar->Render();
 
 		spriteHandler->End();
 		d3ddv->EndScene();

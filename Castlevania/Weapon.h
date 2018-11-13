@@ -11,7 +11,7 @@ class Weapon :public GameObject
 {
 private:
 	int level;
-
+	int now;
 public:
 	Weapon();
 	void Update(DWORD dt, simon *simon);

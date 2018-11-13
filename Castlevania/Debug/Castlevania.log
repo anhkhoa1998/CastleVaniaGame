@@ -2,5 +2,5 @@
 c:\users\admin\desktop\game\castlevania\castlevania\sprite.h(26): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
 c:\users\admin\desktop\game\castlevania\castlevania\sprite.h(27): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
 c:\users\admin\desktop\game\castlevania\castlevania\gameobject.h(28): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
-c:\users\admin\desktop\game\castlevania\castlevania\simon.h(32): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+c:\users\admin\desktop\game\castlevania\castlevania\simon.h(30): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
   Castlevania.vcxproj -> C:\Users\Admin\Desktop\game\Castlevania\Debug\Castlevania.exe

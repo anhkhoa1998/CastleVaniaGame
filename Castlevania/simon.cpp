@@ -26,16 +26,15 @@ void simon::Render()
 	ani = 0;
 	if (vx == 0)
 	{
-
 		if (nx > 0) {
-			if (state == SIMON_STATE_ATTACK_RIGHT)
+			if (state == SIMON_STATE_ATTACK)
 				ani = SIMON_ANI_ATTACK_RIGHT;
 			else
 			ani = SIMON_ANI_IDLE_RIGHT;
 		}
 		else
 		{
-			if(state == SIMON_STATE_ATTACK_LEFT)
+			if(state == SIMON_STATE_ATTACK)
 				ani = SIMON_ANI_ATTACK_LEFT;
 			else ani = SIMON_ANI_IDLE_LEFT;
 		}
@@ -64,13 +63,8 @@ void simon::SetState(int state)
 	case SIMON_STATE_JUMP:
 		if (y == 100)
 			vy = -SIMON_JUMP_SPEED_Y;
-
-	case SIMON_STATE_IDLE_LEFT:
-		nx = -1;
-		vx = 0;
 		break;
-	case SIMON_STATE_IDLE_RIGHT:
-		nx = 1;
+	case SIMON_STATE_IDLE:
 		vx = 0;
 		break;
 	}

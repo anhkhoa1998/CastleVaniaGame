@@ -20,30 +20,30 @@ void Weapon::Update(DWORD dt, simon*Simon)
 			ani = WEAPON_ANI_FIGHT_RIGHT;
 			float X = Simon->GetX() + animations[ani]->getXp();
 			float Y = Simon->GetY() + animations[ani]->getYp();
-			this->SetPosition(Simon,X,Y);
+			this->SetPosition(Simon, X, Y);
+			now = ani;
 		}
+		else
+		{
+			ani = WEAPON_ANI_FIGHT_LEFT;
+			float X = Simon->GetX() + animations[ani]->getXp();
+			float Y = Simon->GetY() + animations[ani]->getYp();
+			this->SetPosition(Simon, X, Y);
+			now = ani;
+		}
+	}
+	else
+	{
+		now = WEAPON_STATE_IDLE;
 	}
 }
 
 void Weapon::Render(simon * Simon)
 {
-	int ani;
 	if (state == WEAPON_STATE_FIGHT)
 	{
-		if (Simon->GetNx() == 1)
-		{
-			ani = WEAPON_ANI_FIGHT_RIGHT;
-			animations[ani]->Render(x, y);
-		}
-		else
-		{
-			ani = WEAPON_ANI_FIGHT_LEFT;
-			animations[ani]->Render(x, y);
-		}
-		
+		animations[now]->Render(x, y);
 	}
-
-
 }
 
 void Weapon::SetState(int state,simon * Simon)
@@ -55,6 +55,7 @@ void Weapon::SetState(int state,simon * Simon)
 		vx = 0;
 		break;
 	case WEAPON_STATE_IDLE:
+		vx = 0;
 		break;
 	}
 
